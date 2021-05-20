@@ -1,24 +1,21 @@
 package utils
 
 import (
-	"strings"
-	"syscall"
-
-	"github.com/bi-zone/wmi"
+	"github.com/Microsoft/go-winio"
+	"github.com/StackExchange/wmi"
 	"golang.org/x/sys/windows/registry"
+	"strings"
 )
 
-const afHvSock = 34      // AF_HYPERV
-const sHvProtocolRaw = 1 // HV_PROTOCOL_RAW
-
 func CheckHVService() bool {
-	gcs, err := registry.OpenKey(registry.LOCAL_MACHINE, HyperVServiceRegPath, registry.READ)
+	gcs, err := registry.OpenKey(registry.LOCAL_MACHINE, `SOFTWARE\Microsoft\Windows NT\CurrentVersion\Virtualization\GuestCommunicationServices`, registry.READ)
 	if err != nil {
 		return false
 	}
 	defer gcs.Close()
 
-	agentSrv, err := registry.OpenKey(gcs, HyperVServiceGUID.String(), registry.READ)
+	agentSrvGUID := winio.VsockServiceID(ServicePort)
+	agentSrv, err := registry.OpenKey(gcs, agentSrvGUID.String(), registry.READ)
 	if err != nil {
 		return false
 	}
@@ -26,7 +23,7 @@ func CheckHVService() bool {
 	return true
 }
 
-func GetVMIDs() []string {
+func GetVMID() []string {
 	type Win32_Process struct {
 		CommandLine string
 	}
@@ -38,30 +35,18 @@ func GetVMIDs() []string {
 	}
 
 	guids := make(map[string]interface{})
-
 	for _, v := range processes {
 		args := strings.Split(v.CommandLine, " ")
 		for i := len(args) - 1; i >= 0; i-- {
 			if strings.Contains(args[i], "{") {
-				guids[args[i]] = nil
+				guids[args[i]] = 0
 				break
 			}
 		}
 	}
-
 	results := make([]string, 0)
-	for k := range guids {
+	for k, _ := range guids {
 		results = append(results, k[1:len(k)-1])
 	}
 	return results
-}
-
-func CheckHvSocket() bool {
-	fd, err := syscall.Socket(afHvSock, syscall.SOCK_STREAM, sHvProtocolRaw)
-	if err != nil {
-		println(err.Error())
-		return false
-	}
-	syscall.Close(fd)
-	return true
 }

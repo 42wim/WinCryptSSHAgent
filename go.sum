@@ -1,3 +1,5 @@
+github.com/StackExchange/wmi v0.0.0-20210224194228-fe8f1750fd46 h1:5sXbqlSomvdjlRbWyNqkPsJ3Fg+tQZCbgeX1VGljbQY=
+github.com/StackExchange/wmi v0.0.0-20210224194228-fe8f1750fd46/go.mod h1:3eOhrUMpNV+6aFIbp5/iudMxNCF27Vw2OZgy4xEx0Fg=
 github.com/bi-zone/go-ole v1.2.5 h1:/4G2KrTbq1e3FsMkd40quzwIrLb4QdxZJnUUlG7UjcM=
 github.com/bi-zone/go-ole v1.2.5/go.mod h1:BxzT498d9QAq10L6G/pTMscpDzqnpKN6DUBbmFKwyQY=
 github.com/bi-zone/wmi v1.1.4 h1:82DmCVK/Qf0MKSvUP52tfoJPsD/LPebHI1gZMN6izG4=
